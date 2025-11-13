@@ -89,70 +89,124 @@ window.handleRoutes = function(pages) {
   window.parent.postMessage(pagesData, '*');
 };
 
-// Добавляем этот код в iframe
 document.addEventListener('DOMContentLoaded', function() {
-  // Обработчик сообщений
+  // Обработчик сообщений для включения/выключения режима редактирования
   window.addEventListener('message', function(event) {
     if (event.data && event.data.type === 'enableEasyEditMode') {
       document.body.classList.add('easy-mode-edit');
+      initEasyTagHandlers();
       console.log('✅ Easy edit mode enabled');
     }
     
     if (event.data && event.data.type === 'disableEasyEditMode') {
       document.body.classList.remove('easy-mode-edit');
+      removeEasyTagHandlers();
       console.log('❌ Easy edit mode disabled');
     }
   });
-});
 
-document.addEventListener('DOMContentLoaded', function() {
+  // Функция для удаления всех обработчиков
+  function removeEasyTagHandlers() {
+    const elements = document.querySelectorAll('[data-easytag]');
+    
+    elements.forEach(element => {
+      element.removeEventListener('click', handleEasyTagClick);
+      element.removeEventListener('mouseenter', handleMouseEnter);
+      element.removeEventListener('mouseleave', handleMouseLeave);
+      
+      // Удаляем подсказку если она есть
+      if (element._easyTagLabel) {
+        element._easyTagLabel.remove();
+        element._easyTagLabel = null;
+      }
+    });
+  }
+
+  // Обработчики для показа/скрытия подсказки
+  function handleMouseEnter() {
+    if (!this._easyTagLabel) {
+      const tagName = this.tagName.toLowerCase();
+      const label = document.createElement('div');
+      label.className = 'easy-tag-label';
+      label.textContent = tagName;
+
+      // Для очень маленьких элементов используем уменьшенную подсказку
+      const rect = this.getBoundingClientRect();
+      if (rect.width < 50 || rect.height < 30) {
+        label.classList.add('small');
+      }
+
+      // Для элементов у правого края показываем подсказку справа
+      if (rect.left > window.innerWidth - 100) {
+        label.classList.add('top-right');
+      }
+
+      this.appendChild(label);
+      this._easyTagLabel = label;
+    }
+  }
+
+  function handleMouseLeave() {
+    if (this._easyTagLabel) {
+      this._easyTagLabel.remove();
+      this._easyTagLabel = null;
+    }
+  }
+
   // Функция для инициализации обработчиков событий
   function initEasyTagHandlers() {
     const elements = document.querySelectorAll('[data-easytag]');
     
     elements.forEach(element => {
-      // Удаляем существующие обработчики, чтобы избежать дублирования
+      // Удаляем старые обработчики
       element.removeEventListener('click', handleEasyTagClick);
-      // Добавляем новый обработчик
+      element.removeEventListener('mouseenter', handleMouseEnter);
+      element.removeEventListener('mouseleave', handleMouseLeave);
+      
+      // Добавляем новые обработчики
       element.addEventListener('click', handleEasyTagClick);
+      element.addEventListener('mouseenter', handleMouseEnter);
+      element.addEventListener('mouseleave', handleMouseLeave);
     });
   }
 
   // Обработчик клика по элементам с data-easytag
   function handleEasyTagClick(event) {
-    const editModeElement = document.getElementsByClassName('easy-mode-edit');
-
-    if (editModeElement.length === 0) {
-      // Если режим редактирования не активен, ничего не делаем
+    if (!document.body.classList.contains('easy-mode-edit')) {
       return;
     }
 
     event.stopPropagation();
     const easyTagData = this.getAttribute('data-easytag');
-    console.log({easyTagData});
+    const tagName = this.tagName.toLowerCase();
     
-    // Отправляем данные наверх
+    console.log('Clicked element:', { 
+      tag: tagName, 
+      data: easyTagData 
+    });
+    
     window.parent.postMessage({
       type: 'easyTagClick',
       timestamp: new Date().toISOString(),
-      data: easyTagData
+      data: easyTagData,
+      tagName: tagName,
+      elementInfo: {
+        tag: tagName,
+        classes: this.className,
+        id: this.id
+      }
     }, '*');
 
     event.preventDefault();
   }
 
-  // Инициализация при загрузке DOM
-  initEasyTagHandlers();
-
-  // Наблюдатель за изменениями DOM для обработки динамического контента
+  // Наблюдатель за изменениями DOM
   const observer = new MutationObserver(function(mutations) {
     let shouldInit = false;
     
     mutations.forEach(function(mutation) {
-      // Проверяем добавленные узлы
       mutation.addedNodes.forEach(function(node) {
-        if (node.nodeType === 1) { // ELEMENT_NODE
-          // Проверяем сам элемент или его потомков на наличие data-easytag
+        if (node.nodeType === 1) {
           if (node.hasAttribute('data-easytag') || 
               node.querySelector('[data-easytag]')) {
             shouldInit = true;
@@ -161,17 +215,20 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
     
-    if (shouldInit) {
-      // Небольшая задержка для гарантии, что DOM полностью обновлен
-      setTimeout(initEasyTagHandlers, 10);
+    if (shouldInit && document.body.classList.contains('easy-mode-edit')) {
+      setTimeout(() => {
+        initEasyTagHandlers();
+      }, 10);
     }
   });
 
-  // Начинаем наблюдение
   observer.observe(document.body, {
     childList: true,
     subtree: true
   });
 
-  return true;
+  // Инициализация при загрузке, если режим уже активен
+  if (document.body.classList.contains('easy-mode-edit')) {
+    initEasyTagHandlers();
+  }
 });
