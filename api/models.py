@@ -41,7 +41,7 @@ class Member(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='posts')
-    content = models.TextField()
+    content = models.TextField(max_length=5000)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -56,7 +56,7 @@ class Post(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='comments')
-    content = models.TextField()
+    content = models.TextField(max_length=2000)
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
