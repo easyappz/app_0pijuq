@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { login } from '../../api/auth';
 import { useAuth } from '../../contexts/AuthContext';
 import Layout from '../../components/Layout';
 import './styles.css';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login: authLogin } = useAuth();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -36,8 +35,7 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const userData = await login(formData);
-      authLogin(userData);
+      await login(formData);
       navigate('/');
     } catch (error) {
       if (error.response?.status === 401) {
