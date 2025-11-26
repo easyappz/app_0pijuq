@@ -35,6 +35,12 @@ paths:
   /api/comments/{id}/:
     delete:
       $ref: './paths/comments-delete.yml#/delete'
+  /api/profile/{id}/:
+    $ref: './paths/profile-detail.yml'
+  /api/profile/:
+    $ref: './paths/profile-update.yml'
+  /api/profile/{id}/posts/:
+    $ref: './paths/profile-posts.yml'
 
 components:
   schemas:

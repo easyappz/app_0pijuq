@@ -1,0 +1,93 @@
+get:
+  summary: Get user posts
+  description: Returns paginated list of posts by a specific user
+  operationId: getUserPosts
+  x-isSecure: true
+  tags:
+    - Profile
+  security:
+    - cookieAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: User ID
+    - name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+      description: Page number
+    - name: page_size
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 100
+      description: Number of items per page
+  responses:
+    '200':
+      description: List of user posts
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              count:
+                type: integer
+                description: Total number of posts
+              next:
+                type: string
+                format: uri
+                nullable: true
+                description: URL to the next page
+              previous:
+                type: string
+                format: uri
+                nullable: true
+                description: URL to the previous page
+              results:
+                type: array
+                items:
+                  $ref: '../openapi.yml#/components/schemas/Post'
+            required:
+              - count
+              - results
+          example:
+            count: 42
+            next: http://localhost:8000/api/profile/1/posts/?page=2
+            previous: null
+            results:
+              - id: 1
+                content: My first post
+                author:
+                  id: 1
+                  username: johndoe
+                  email: john@example.com
+                  created_at: '2024-01-15T10:30:00Z'
+                created_at: '2024-01-16T12:00:00Z'
+                updated_at: '2024-01-16T12:00:00Z'
+    '401':
+      description: Not authenticated
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          example:
+            error: Authentication required
+            details: {}
+    '404':
+      description: User not found
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          example:
+            error: User not found
+            details: {}
