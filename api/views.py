@@ -14,7 +14,9 @@ from .serializers import (
     PostSerializer,
     PostCreateSerializer,
     CommentSerializer,
-    CommentCreateSerializer
+    CommentCreateSerializer,
+    ProfileSerializer,
+    ProfileUpdateSerializer
 )
 from .models import Member, Post, Comment
 from .authentication import CookieAuthentication, create_session, delete_session
@@ -423,3 +425,89 @@ class CommentDeleteView(APIView):
         
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProfileDetailView(APIView):
+    """
+    Get user profile by ID
+    """
+    authentication_classes = [CookieAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        responses={
+            200: ProfileSerializer,
+            401: {'description': 'Not authenticated'},
+            404: {'description': 'User not found'}
+        },
+        description="Returns detailed information about a user profile including posts count"
+    )
+    def get(self, request, id):
+        member = get_object_or_404(Member, id=id)
+        serializer = ProfileSerializer(member)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProfileUpdateView(APIView):
+    """
+    Update own profile
+    """
+    authentication_classes = [CookieAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        request=ProfileUpdateSerializer,
+        responses={
+            200: ProfileSerializer,
+            400: {'description': 'Invalid input'},
+            401: {'description': 'Not authenticated'}
+        },
+        description="Updates the authenticated user's profile information"
+    )
+    def patch(self, request):
+        serializer = ProfileUpdateSerializer(request.user, data=request.data, partial=True)
+        
+        if not serializer.is_valid():
+            return Response(
+                {
+                    "error": "Validation error",
+                    "details": serializer.errors
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        serializer.save()
+        
+        # Return full profile data
+        response_serializer = ProfileSerializer(request.user)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+
+
+class ProfilePostsView(APIView):
+    """
+    Get posts by a specific user with pagination
+    """
+    authentication_classes = [CookieAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        responses={
+            200: PostSerializer(many=True),
+            401: {'description': 'Not authenticated'},
+            404: {'description': 'User not found'}
+        },
+        description="Returns paginated list of posts by a specific user"
+    )
+    def get(self, request, id):
+        # Check if user exists
+        member = get_object_or_404(Member, id=id)
+        
+        # Get all posts by this user
+        posts = Post.objects.filter(author=member)
+        
+        # Apply pagination
+        paginator = PostsPagination()
+        paginated_posts = paginator.paginate_queryset(posts, request)
+        
+        serializer = PostSerializer(paginated_posts, many=True)
+        return paginator.get_paginated_response(serializer.data)

@@ -110,11 +110,24 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
         fields = ['id', 'username', 'bio', 'avatar_url', 'posts_count', 'created_at']
-        read_only_fields = ['id', 'posts_count', 'created_at']
+        read_only_fields = ['id', 'username', 'posts_count', 'created_at']
 
     def get_posts_count(self, obj):
         """Get the count of posts by this user"""
         return obj.posts.count()
+
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    """Serializer for updating user profile"""
+    class Meta:
+        model = Member
+        fields = ['bio']
+
+    def validate_bio(self, value):
+        """Validate bio length"""
+        if value and len(value) > 500:
+            raise serializers.ValidationError("Bio must not exceed 500 characters")
+        return value
 
 
 class MessageSerializer(serializers.Serializer):
