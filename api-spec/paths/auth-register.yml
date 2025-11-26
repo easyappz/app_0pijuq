@@ -1,0 +1,52 @@
+post:
+  summary: Register a new user
+  description: Creates a new user account with username, email and password
+  operationId: registerUser
+  x-isSecure: false
+  tags:
+    - Authentication
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../openapi.yml#/components/schemas/RegisterRequest'
+        example:
+          username: johndoe
+          email: john@example.com
+          password: SecurePassword123
+          password_confirm: SecurePassword123
+  responses:
+    '201':
+      description: User successfully registered
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Member'
+          example:
+            id: 1
+            username: johndoe
+            email: john@example.com
+            created_at: '2024-01-15T10:30:00Z'
+    '400':
+      description: Bad request - validation errors
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          examples:
+            passwordMismatch:
+              value:
+                error: Validation error
+                details:
+                  password_confirm: ["Passwords do not match"]
+            usernameExists:
+              value:
+                error: Validation error
+                details:
+                  username: ["User with this username already exists"]
+            emailExists:
+              value:
+                error: Validation error
+                details:
+                  email: ["User with this email already exists"]

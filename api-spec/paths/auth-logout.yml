@@ -1,0 +1,35 @@
+post:
+  summary: Logout user
+  description: Logs out the current user and clears the session cookie
+  operationId: logoutUser
+  x-isSecure: true
+  tags:
+    - Authentication
+  security:
+    - cookieAuth: []
+  responses:
+    '200':
+      description: Successfully logged out
+      headers:
+        Set-Cookie:
+          schema:
+            type: string
+            example: sessionid=; HttpOnly; Path=/; Max-Age=0
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          example:
+            message: Successfully logged out
+    '401':
+      description: Not authenticated
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          example:
+            error: Authentication required
+            details: {}
