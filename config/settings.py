@@ -62,10 +62,12 @@ SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
 SESSION_COOKIE_AGE = 30 * 24 * 60 * 60  # 30 days
 
 # Cache configuration for session storage
+# Using FileBasedCache instead of LocMemCache to ensure all Gunicorn workers
+# can access the same session data, fixing 403 errors on multi-worker setup
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': BASE_DIR / 'persistent' / 'cache',
         'OPTIONS': {
             'MAX_ENTRIES': 10000
         }
