@@ -214,9 +214,9 @@ class PostsPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class PostListView(APIView):
+class PostListCreateView(APIView):
     """
-    Get paginated list of posts
+    Get paginated list of posts or create a new post
     """
     authentication_classes = [CookieAuthentication]
     permission_classes = [IsAuthenticated]
@@ -237,14 +237,6 @@ class PostListView(APIView):
         
         serializer = PostSerializer(paginated_posts, many=True)
         return paginator.get_paginated_response(serializer.data)
-
-
-class PostCreateView(APIView):
-    """
-    Create a new post
-    """
-    authentication_classes = [CookieAuthentication]
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         request=PostCreateSerializer,
@@ -275,9 +267,9 @@ class PostCreateView(APIView):
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
-class PostDetailView(APIView):
+class PostDetailDeleteView(APIView):
     """
-    Get details of a specific post
+    Get details of a specific post or delete it
     """
     authentication_classes = [CookieAuthentication]
     permission_classes = [IsAuthenticated]
@@ -294,14 +286,6 @@ class PostDetailView(APIView):
         post = get_object_or_404(Post, id=id)
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class PostDeleteView(APIView):
-    """
-    Delete user's own post
-    """
-    authentication_classes = [CookieAuthentication]
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         responses={
@@ -329,9 +313,9 @@ class PostDeleteView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class CommentListView(APIView):
+class CommentListCreateView(APIView):
     """
-    Get list of comments for a specific post
+    Get list of comments for a specific post or create a new comment
     """
     authentication_classes = [CookieAuthentication]
     permission_classes = [IsAuthenticated]
@@ -352,14 +336,6 @@ class CommentListView(APIView):
         comments = Comment.objects.filter(post=post)
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class CommentCreateView(APIView):
-    """
-    Create a new comment for a post
-    """
-    authentication_classes = [CookieAuthentication]
-    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         request=CommentCreateSerializer,

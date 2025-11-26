@@ -82,7 +82,6 @@ class CommentSerializer(serializers.ModelSerializer):
     """Serializer for Comment model - displays comment data"""
     author = MemberSerializer(read_only=True)
     post_id = serializers.IntegerField(source='post.id', read_only=True)
-    updated_at = serializers.DateTimeField(source='created_at', read_only=True)
 
     class Meta:
         model = Comment

@@ -7,8 +7,8 @@ class Member(models.Model):
     username = models.CharField(max_length=150, unique=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
-    bio = models.TextField(blank=True, default='')
-    avatar_url = models.URLField(blank=True, default='')
+    bio = models.TextField(max_length=500, blank=True, null=True)
+    avatar_url = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -58,6 +58,7 @@ class Comment(models.Model):
     author = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField(max_length=2000)
     created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'comments'
