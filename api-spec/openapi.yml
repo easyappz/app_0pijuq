@@ -17,6 +17,24 @@ paths:
     $ref: './paths/auth-logout.yml'
   /api/auth/me/:
     $ref: './paths/auth-me.yml'
+  /api/posts/:
+    get:
+      $ref: './paths/posts-list.yml#/get'
+    post:
+      $ref: './paths/posts-create.yml#/post'
+  /api/posts/{id}/:
+    get:
+      $ref: './paths/posts-detail.yml#/get'
+    delete:
+      $ref: './paths/posts-delete.yml#/delete'
+  /api/posts/{post_id}/comments/:
+    get:
+      $ref: './paths/comments-list.yml#/get'
+    post:
+      $ref: './paths/comments-create.yml#/post'
+  /api/comments/{id}/:
+    delete:
+      $ref: './paths/comments-delete.yml#/delete'
 
 components:
   schemas:
@@ -77,6 +95,61 @@ components:
       required:
         - username
         - password
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+          maxLength: 5000
+        author:
+          $ref: '#/components/schemas/Member'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - id
+        - content
+        - author
+        - created_at
+        - updated_at
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+          maxLength: 2000
+        author:
+          $ref: '#/components/schemas/Member'
+        post_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - id
+        - content
+        - author
+        - post_id
+        - created_at
+        - updated_at
 
     Error:
       type: object

@@ -1,0 +1,46 @@
+delete:
+  summary: Delete comment
+  description: Deletes user's own comment
+  operationId: deleteComment
+  x-isSecure: true
+  tags:
+    - Comments
+  security:
+    - cookieAuth: []
+  parameters:
+    - name: id
+      in: path
+      description: Comment ID
+      required: true
+      schema:
+        type: integer
+  responses:
+    '204':
+      description: Comment deleted successfully
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          example:
+            error: Authentication required
+            details: {}
+    '403':
+      description: Forbidden - not the owner
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          example:
+            error: You do not have permission to delete this comment
+            details: {}
+    '404':
+      description: Comment not found
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          example:
+            error: Comment not found
+            details: {}

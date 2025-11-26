@@ -1,0 +1,46 @@
+delete:
+  summary: Delete post
+  description: Deletes user's own post
+  operationId: deletePost
+  x-isSecure: true
+  tags:
+    - Posts
+  security:
+    - cookieAuth: []
+  parameters:
+    - name: id
+      in: path
+      description: Post ID
+      required: true
+      schema:
+        type: integer
+  responses:
+    '204':
+      description: Post deleted successfully
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          example:
+            error: Authentication required
+            details: {}
+    '403':
+      description: Forbidden - not the owner
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          example:
+            error: You do not have permission to delete this post
+            details: {}
+    '404':
+      description: Post not found
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          example:
+            error: Post not found
+            details: {}
