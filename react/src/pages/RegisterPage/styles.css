@@ -1,0 +1,179 @@
+.register-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+.register-container {
+  width: 100%;
+  max-width: 480px;
+}
+
+.register-card {
+  background: #2a2a3e;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.register-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.register-subtitle {
+  font-size: 15px;
+  color: #b9bbbe;
+  margin: 0 0 32px 0;
+  text-align: center;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.error-banner {
+  background: #ed4245;
+  color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #b9bbbe;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input {
+  background: #202030;
+  border: 1px solid #1e1e2e;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: #ffffff;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #5865f2;
+  background: #1a1a28;
+}
+
+.form-input::placeholder {
+  color: #72767d;
+}
+
+.form-input.input-error {
+  border-color: #ed4245;
+}
+
+.error-message {
+  font-size: 13px;
+  color: #ed4245;
+  margin-top: -4px;
+}
+
+.submit-button {
+  background: #5865f2;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #4752c4;
+}
+
+.submit-button:disabled {
+  background: #4752c4;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.login-link {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.login-text {
+  color: #b9bbbe;
+  margin-right: 6px;
+}
+
+.login-link-text {
+  color: #00aff4;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.login-link-text:hover {
+  color: #00d4ff;
+  text-decoration: underline;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .register-card {
+    padding: 32px 24px;
+  }
+
+  .register-title {
+    font-size: 24px;
+  }
+
+  .register-subtitle {
+    font-size: 14px;
+  }
+
+  .form-input {
+    padding: 11px 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .submit-button {
+    padding: 13px 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-page {
+    padding: 12px;
+  }
+
+  .register-card {
+    padding: 28px 20px;
+  }
+
+  .register-title {
+    font-size: 22px;
+  }
+}
