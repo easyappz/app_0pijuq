@@ -1,0 +1,122 @@
+.post-card {
+  background: #2a2a2a;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid transparent;
+}
+
+.post-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border-color: #4a9eff;
+}
+
+.post-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.author-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a9eff, #3a7ecf);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.author-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.author-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.post-date {
+  font-size: 13px;
+  color: #888;
+}
+
+.post-card-content {
+  margin-bottom: 16px;
+}
+
+.post-card-content p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #e0e0e0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.post-card-footer {
+  border-top: 1px solid #333;
+  padding-top: 12px;
+}
+
+.post-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #888;
+  font-size: 14px;
+}
+
+.stat-icon {
+  flex-shrink: 0;
+}
+
+.edited-badge {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .post-card {
+    padding: 16px;
+  }
+
+  .author-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+
+  .author-name {
+    font-size: 15px;
+  }
+
+  .post-card-content p {
+    font-size: 14px;
+  }
+}
