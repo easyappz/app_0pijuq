@@ -11,7 +11,10 @@ from .views import (
     PostDeleteView,
     CommentListView,
     CommentCreateView,
-    CommentDeleteView
+    CommentDeleteView,
+    ProfileDetailView,
+    ProfileUpdateView,
+    ProfilePostsView
 )
 
 urlpatterns = [
@@ -21,10 +24,13 @@ urlpatterns = [
     path("auth/logout/", LogoutView.as_view(), name="auth-logout"),
     path("auth/me/", MeView.as_view(), name="auth-me"),
     path("posts/", PostListView.as_view(), name="posts-list"),
-    path("posts/create/", PostCreateView.as_view(), name="posts-create"),
+    path("posts/", PostCreateView.as_view(), name="posts-create"),
     path("posts/<int:id>/", PostDetailView.as_view(), name="posts-detail"),
-    path("posts/<int:id>/delete/", PostDeleteView.as_view(), name="posts-delete"),
+    path("posts/<int:id>/", PostDeleteView.as_view(), name="posts-delete"),
     path("posts/<int:post_id>/comments/", CommentListView.as_view(), name="comments-list"),
-    path("posts/<int:post_id>/comments/create/", CommentCreateView.as_view(), name="comments-create"),
-    path("comments/<int:id>/delete/", CommentDeleteView.as_view(), name="comments-delete"),
+    path("posts/<int:post_id>/comments/", CommentCreateView.as_view(), name="comments-create"),
+    path("comments/<int:id>/", CommentDeleteView.as_view(), name="comments-delete"),
+    path("profile/<int:id>/", ProfileDetailView.as_view(), name="profile-detail"),
+    path("profile/", ProfileUpdateView.as_view(), name="profile-update"),
+    path("profile/<int:id>/posts/", ProfilePostsView.as_view(), name="profile-posts"),
 ]
