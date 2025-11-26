@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getProfile, updateProfile, getProfilePosts } from '../../api/profile';
 import { useAuth } from '../../contexts/AuthContext';
 import PostCard from '../../components/PostCard';
+import Layout from '../../components/Layout';
 import './styles.css';
 
 const ProfilePage = () => {
@@ -85,25 +86,29 @@ const ProfilePage = () => {
 
   if (loading) {
     return (
-      <div className="profile-page" data-easytag="id8-react/src/pages/ProfilePage/index.jsx">
-        <div className="profile-loading">
-          <div className="spinner"></div>
-          <p>Загрузка профиля...</p>
+      <Layout>
+        <div className="profile-page" data-easytag="id8-react/src/pages/ProfilePage/index.jsx">
+          <div className="profile-loading">
+            <div className="spinner"></div>
+            <p>Загрузка профиля...</p>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   if (error) {
     return (
-      <div className="profile-page" data-easytag="id8-react/src/pages/ProfilePage/index.jsx">
-        <div className="profile-error">
-          <p>{error}</p>
-          <button onClick={() => navigate('/feed')} className="back-button">
-            Вернуться к ленте
-          </button>
+      <Layout>
+        <div className="profile-page" data-easytag="id8-react/src/pages/ProfilePage/index.jsx">
+          <div className="profile-error">
+            <p>{error}</p>
+            <button onClick={() => navigate('/feed')} className="back-button">
+              Вернуться к ленте
+            </button>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
@@ -112,118 +117,120 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="profile-page" data-easytag="id8-react/src/pages/ProfilePage/index.jsx">
-      <div className="profile-container">
-        <div className="profile-header">
-          <div className="profile-avatar">
-            <div className="avatar-placeholder">
-              {profile.username.charAt(0).toUpperCase()}
+    <Layout>
+      <div className="profile-page" data-easytag="id8-react/src/pages/ProfilePage/index.jsx">
+        <div className="profile-container">
+          <div className="profile-header">
+            <div className="profile-avatar">
+              <div className="avatar-placeholder">
+                {profile.username.charAt(0).toUpperCase()}
+              </div>
             </div>
-          </div>
-          
-          <div className="profile-info">
-            <div className="profile-username-row">
-              <h1 className="profile-username">{profile.username}</h1>
-              {isOwnProfile && (
-                <button 
-                  className="edit-profile-button"
-                  onClick={handleOpenEditModal}
-                >
-                  Редактировать профиль
-                </button>
+            
+            <div className="profile-info">
+              <div className="profile-username-row">
+                <h1 className="profile-username">{profile.username}</h1>
+                {isOwnProfile && (
+                  <button 
+                    className="edit-profile-button"
+                    onClick={handleOpenEditModal}
+                  >
+                    Редактировать профиль
+                  </button>
+                )}
+              </div>
+              
+              <div className="profile-stats">
+                <div className="stat-item">
+                  <span className="stat-value">{profile.posts_count}</span>
+                  <span className="stat-label">постов</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">На сайте с {formatDate(profile.created_at)}</span>
+                </div>
+              </div>
+              
+              {profile.bio && (
+                <div className="profile-bio">
+                  <p>{profile.bio}</p>
+                </div>
               )}
             </div>
+          </div>
+
+          <div className="profile-posts-section">
+            <h2 className="posts-section-title">Посты пользователя</h2>
             
-            <div className="profile-stats">
-              <div className="stat-item">
-                <span className="stat-value">{profile.posts_count}</span>
-                <span className="stat-label">постов</span>
+            {posts.length === 0 ? (
+              <div className="no-posts">
+                <p>Пользователь пока не создал ни одного поста</p>
               </div>
-              <div className="stat-item">
-                <span className="stat-label">На сайте с {formatDate(profile.created_at)}</span>
-              </div>
-            </div>
-            
-            {profile.bio && (
-              <div className="profile-bio">
-                <p>{profile.bio}</p>
+            ) : (
+              <div className="posts-list">
+                {posts.map((post) => (
+                  <PostCard key={post.id} post={post} />
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        <div className="profile-posts-section">
-          <h2 className="posts-section-title">Посты пользователя</h2>
-          
-          {posts.length === 0 ? (
-            <div className="no-posts">
-              <p>Пользователь пока не создал ни одного поста</p>
-            </div>
-          ) : (
-            <div className="posts-list">
-              {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {isEditModalOpen && (
-        <div className="modal-overlay" onClick={handleCloseEditModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Редактировать профиль</h2>
-              <button className="close-modal" onClick={handleCloseEditModal}>
-                ✕
-              </button>
-            </div>
-            
-            <form onSubmit={handleUpdateBio} className="edit-form">
-              <div className="form-group">
-                <label htmlFor="bio">Биография</label>
-                <textarea
-                  id="bio"
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  placeholder="Расскажите о себе..."
-                  maxLength={500}
-                  rows={5}
-                  className="bio-textarea"
-                />
-                <div className="char-counter">
-                  {bio.length}/500
-                </div>
-              </div>
-              
-              {updateError && (
-                <div className="update-error">
-                  {updateError}
-                </div>
-              )}
-              
-              <div className="modal-actions">
-                <button 
-                  type="button" 
-                  onClick={handleCloseEditModal}
-                  className="cancel-button"
-                  disabled={updateLoading}
-                >
-                  Отмена
-                </button>
-                <button 
-                  type="submit" 
-                  className="save-button"
-                  disabled={updateLoading}
-                >
-                  {updateLoading ? 'Сохранение...' : 'Сохранить'}
+        {isEditModalOpen && (
+          <div className="modal-overlay" onClick={handleCloseEditModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2>Редактировать профиль</h2>
+                <button className="close-modal" onClick={handleCloseEditModal}>
+                  ✕
                 </button>
               </div>
-            </form>
+              
+              <form onSubmit={handleUpdateBio} className="edit-form">
+                <div className="form-group">
+                  <label htmlFor="bio">Биография</label>
+                  <textarea
+                    id="bio"
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    placeholder="Расскажите о себе..."
+                    maxLength={500}
+                    rows={5}
+                    className="bio-textarea"
+                  />
+                  <div className="char-counter">
+                    {bio.length}/500
+                  </div>
+                </div>
+                
+                {updateError && (
+                  <div className="update-error">
+                    {updateError}
+                  </div>
+                )}
+                
+                <div className="modal-actions">
+                  <button 
+                    type="button" 
+                    onClick={handleCloseEditModal}
+                    className="cancel-button"
+                    disabled={updateLoading}
+                  >
+                    Отмена
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="save-button"
+                    disabled={updateLoading}
+                  >
+                    {updateLoading ? 'Сохранение...' : 'Сохранить'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </Layout>
   );
 };
 

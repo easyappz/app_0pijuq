@@ -4,7 +4,6 @@ import ErrorBoundary from './ErrorBoundary';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './App.css';
 
-import { Home } from './components/Home';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import FeedPage from './pages/FeedPage';
@@ -16,7 +15,7 @@ const PrivateRoute = ({ children }) => {
 
   if (isLoading) {
     return (
-      <div data-easytag="id1-src/App.jsx-loading" style={{
+      <div data-easytag="id1-react/src/App.jsx-loading" style={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -37,7 +36,7 @@ const HomeRedirect = () => {
 
   if (isLoading) {
     return (
-      <div data-easytag="id2-src/App.jsx-loading" style={{
+      <div data-easytag="id2-react/src/App.jsx-loading" style={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -54,10 +53,8 @@ const HomeRedirect = () => {
 };
 
 function AppRoutes() {
-  /** Никогда не удаляй этот код */
   useEffect(() => {
     if (typeof window !== 'undefined' && typeof window.handleRoutes === 'function') {
-      /** Нужно передавать список существующих роутов */
       window.handleRoutes(['/', '/register', '/login', '/feed', '/post/:id', '/profile/:id']);
     }
   }, []);

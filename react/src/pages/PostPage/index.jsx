@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { getPost, deletePost } from '../../api/posts';
 import { getComments, createComment } from '../../api/comments';
 import CommentCard from '../../components/CommentCard';
+import Layout from '../../components/Layout';
 import './styles.css';
 
 const PostPage = () => {
@@ -25,9 +26,9 @@ const PostPage = () => {
   const loadPost = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await getPost(id);
       setPost(data);
-      setError(null);
     } catch (err) {
       setError('Не удалось загрузить пост');
       console.error('Error loading post:', err);
@@ -96,90 +97,96 @@ const PostPage = () => {
 
   if (loading) {
     return (
-      <div className="post-page" data-easytag="id6-src/pages/PostPage/index.jsx">
-        <div className="post-page-container">
-          <div className="loading">Загрузка...</div>
+      <Layout>
+        <div className="post-page" data-easytag="id6-react/src/pages/PostPage/index.jsx">
+          <div className="post-page-container">
+            <div className="loading">Загрузка...</div>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   if (error || !post) {
     return (
-      <div className="post-page" data-easytag="id6-src/pages/PostPage/index.jsx">
-        <div className="post-page-container">
-          <div className="error">{error || 'Пост не найден'}</div>
-          <button onClick={() => navigate('/feed')} className="back-button">
-            Назад к ленте
-          </button>
+      <Layout>
+        <div className="post-page" data-easytag="id6-react/src/pages/PostPage/index.jsx">
+          <div className="post-page-container">
+            <div className="error">{error || 'Пост не найден'}</div>
+            <button onClick={() => navigate('/feed')} className="back-button">
+              Назад к ленте
+            </button>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   const isAuthor = user && post.author && user.id === post.author.id;
 
   return (
-    <div className="post-page" data-easytag="id6-src/pages/PostPage/index.jsx">
-      <div className="post-page-container">
-        <button onClick={() => navigate('/feed')} className="back-button">
-          ← Назад к ленте
-        </button>
+    <Layout>
+      <div className="post-page" data-easytag="id6-react/src/pages/PostPage/index.jsx">
+        <div className="post-page-container">
+          <button onClick={() => navigate('/feed')} className="back-button">
+            ← Назад к ленте
+          </button>
 
-        <div className="post-detail">
-          <div className="post-header">
-            <div className="post-author-info">
-              <div className="author-name">{post.author?.username || 'Неизвестный пользователь'}</div>
-              <div className="post-date">{formatDate(post.created_at)}</div>
+          <div className="post-detail">
+            <div className="post-header">
+              <div className="post-author-info">
+                <div className="author-name">{post.author?.username || 'Неизвестный пользователь'}</div>
+                <div className="post-date">{formatDate(post.created_at)}</div>
+              </div>
+              {isAuthor && (
+                <button onClick={handleDeletePost} className="delete-post-button">
+                  Удалить пост
+                </button>
+              )}
             </div>
-            {isAuthor && (
-              <button onClick={handleDeletePost} className="delete-post-button">
-                Удалить пост
-              </button>
-            )}
+            <div className="post-content">{post.content}</div>
           </div>
-          <div className="post-content">{post.content}</div>
-        </div>
 
-        <div className="comments-section">
-          <h2 className="comments-title">Комментарии ({comments.length})</h2>
+          <div className="comments-section">
+            <h2 className="comments-title">Комментарии ({comments.length})</h2>
 
-          <form onSubmit={handleSubmitComment} className="comment-form">
-            <textarea
-              value={commentContent}
-              onChange={(e) => setCommentContent(e.target.value)}
-              placeholder="Напишите комментарий..."
-              className="comment-input"
-              rows="3"
-              maxLength="2000"
-              disabled={submitting}
-            />
-            <button 
-              type="submit" 
-              className="submit-comment-button"
-              disabled={submitting || !commentContent.trim()}
-            >
-              {submitting ? 'Отправка...' : 'Добавить комментарий'}
-            </button>
-          </form>
+            <form onSubmit={handleSubmitComment} className="comment-form">
+              <textarea
+                value={commentContent}
+                onChange={(e) => setCommentContent(e.target.value)}
+                placeholder="Напишите комментарий..."
+                className="comment-input"
+                rows="3"
+                maxLength="2000"
+                disabled={submitting}
+              />
+              <button 
+                type="submit" 
+                className="submit-comment-button"
+                disabled={submitting || !commentContent.trim()}
+              >
+                {submitting ? 'Отправка...' : 'Добавить комментарий'}
+              </button>
+            </form>
 
-          <div className="comments-list">
-            {comments.length === 0 ? (
-              <div className="no-comments">Пока нет комментариев</div>
-            ) : (
-              comments.map((comment) => (
-                <CommentCard
-                  key={comment.id}
-                  comment={comment}
-                  currentUserId={user?.id}
-                  onDeleted={handleCommentDeleted}
-                />
-              ))
-            )}
+            <div className="comments-list">
+              {comments.length === 0 ? (
+                <div className="no-comments">Пока нет комментариев</div>
+              ) : (
+                comments.map((comment) => (
+                  <CommentCard
+                    key={comment.id}
+                    comment={comment}
+                    currentUserId={user?.id}
+                    onDeleted={handleCommentDeleted}
+                  />
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

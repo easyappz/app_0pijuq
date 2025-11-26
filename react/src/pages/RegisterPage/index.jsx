@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { register } from '../../api/auth';
 import { useAuth } from '../../contexts/AuthContext';
+import Layout from '../../components/Layout';
 import './styles.css';
 
 const RegisterPage = () => {
@@ -22,7 +23,6 @@ const RegisterPage = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error for this field
     if (errors[name]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -55,121 +55,123 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="register-page" data-easytag="id1-src/pages/RegisterPage/index.jsx">
-      <div className="register-container">
-        <div className="register-card">
-          <h1 className="register-title">Создать аккаунт</h1>
-          <p className="register-subtitle">Присоединяйтесь к нашему сообществу</p>
+    <Layout>
+      <div className="register-page" data-easytag="id1-react/src/pages/RegisterPage/index.jsx">
+        <div className="register-container">
+          <div className="register-card">
+            <h1 className="register-title">Создать аккаунт</h1>
+            <p className="register-subtitle">Присоединяйтесь к нашему сообществу</p>
 
-          <form onSubmit={handleSubmit} className="register-form">
-            {errors.general && (
-              <div className="error-banner">
-                {errors.general}
+            <form onSubmit={handleSubmit} className="register-form">
+              {errors.general && (
+                <div className="error-banner">
+                  {errors.general}
+                </div>
+              )}
+
+              <div className="form-group">
+                <label htmlFor="username" className="form-label">
+                  Имя пользователя
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  className={`form-input ${errors.username ? 'input-error' : ''}`}
+                  placeholder="Введите имя пользователя"
+                  required
+                />
+                {errors.username && (
+                  <span className="error-message">
+                    {Array.isArray(errors.username) ? errors.username[0] : errors.username}
+                  </span>
+                )}
               </div>
-            )}
 
-            <div className="form-group">
-              <label htmlFor="username" className="form-label">
-                Имя пользователя
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                className={`form-input ${errors.username ? 'input-error' : ''}`}
-                placeholder="Введите имя пользователя"
-                required
-              />
-              {errors.username && (
-                <span className="error-message">
-                  {Array.isArray(errors.username) ? errors.username[0] : errors.username}
-                </span>
-              )}
+              <div className="form-group">
+                <label htmlFor="email" className="form-label">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`form-input ${errors.email ? 'input-error' : ''}`}
+                  placeholder="example@mail.com"
+                  required
+                />
+                {errors.email && (
+                  <span className="error-message">
+                    {Array.isArray(errors.email) ? errors.email[0] : errors.email}
+                  </span>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password" className="form-label">
+                  Пароль
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`form-input ${errors.password ? 'input-error' : ''}`}
+                  placeholder="Введите пароль"
+                  required
+                />
+                {errors.password && (
+                  <span className="error-message">
+                    {Array.isArray(errors.password) ? errors.password[0] : errors.password}
+                  </span>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password_confirm" className="form-label">
+                  Подтверждение пароля
+                </label>
+                <input
+                  type="password"
+                  id="password_confirm"
+                  name="password_confirm"
+                  value={formData.password_confirm}
+                  onChange={handleChange}
+                  className={`form-input ${errors.password_confirm ? 'input-error' : ''}`}
+                  placeholder="Повторите пароль"
+                  required
+                />
+                {errors.password_confirm && (
+                  <span className="error-message">
+                    {Array.isArray(errors.password_confirm) ? errors.password_confirm[0] : errors.password_confirm}
+                  </span>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="submit-button"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
+              </button>
+            </form>
+
+            <div className="login-link">
+              <span className="login-text">Уже есть аккаунт?</span>
+              <Link to="/login" className="login-link-text">
+                Войти
+              </Link>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="email" className="form-label">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={`form-input ${errors.email ? 'input-error' : ''}`}
-                placeholder="example@mail.com"
-                required
-              />
-              {errors.email && (
-                <span className="error-message">
-                  {Array.isArray(errors.email) ? errors.email[0] : errors.email}
-                </span>
-              )}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password" className="form-label">
-                Пароль
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={`form-input ${errors.password ? 'input-error' : ''}`}
-                placeholder="Введите пароль"
-                required
-              />
-              {errors.password && (
-                <span className="error-message">
-                  {Array.isArray(errors.password) ? errors.password[0] : errors.password}
-                </span>
-              )}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password_confirm" className="form-label">
-                Подтверждение пароля
-              </label>
-              <input
-                type="password"
-                id="password_confirm"
-                name="password_confirm"
-                value={formData.password_confirm}
-                onChange={handleChange}
-                className={`form-input ${errors.password_confirm ? 'input-error' : ''}`}
-                placeholder="Повторите пароль"
-                required
-              />
-              {errors.password_confirm && (
-                <span className="error-message">
-                  {Array.isArray(errors.password_confirm) ? errors.password_confirm[0] : errors.password_confirm}
-                </span>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
-            </button>
-          </form>
-
-          <div className="login-link">
-            <span className="login-text">Уже есть аккаунт?</span>
-            <Link to="/login" className="login-link-text">
-              Войти
-            </Link>
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
