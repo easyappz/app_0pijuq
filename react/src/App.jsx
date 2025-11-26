@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ErrorBoundary from './ErrorBoundary';
+import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
 
 import { Home } from './components/Home';
@@ -16,9 +17,11 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }
